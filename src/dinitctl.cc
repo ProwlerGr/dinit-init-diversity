@@ -878,6 +878,9 @@ static int process_service_event(cpbuffer_t &rbuffer, unsigned pktlen, handle_t 
         else if (!do_stop && event == service_event_t::FAILEDSTART) {
             if (verbose) {
                 cout << "Service '" << service_name << "' failed to start.\n";
+                cout << "*** line: " << __LINE__ << "\n";
+                cout << "*** pktlen = " << pktlen << "\n";
+                cout << "*** base_pkt_size + STATUS_BUFFER_SIZE = " << (base_pkt_size + STATUS_BUFFER_SIZE) << "\n";
                 if (pktlen >= base_pkt_size + STATUS_BUFFER_SIZE) {
                     uint16_t launch_stage;
                     rbuffer.extract((char *)&launch_stage, base_pkt_size + 4,
