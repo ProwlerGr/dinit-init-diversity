@@ -882,15 +882,17 @@ static int process_service_event(cpbuffer_t &rbuffer, unsigned pktlen, handle_t 
                 cout << "*** pktlen = " << pktlen << "\n";
                 cout << "*** base_pkt_size + STATUS_BUFFER_SIZE = " << (base_pkt_size + STATUS_BUFFER_SIZE) << "\n";
                 if (pktlen >= base_pkt_size + STATUS_BUFFER_SIZE) {
+                    cout << "*** ok, pktlen >= ase_pkt_size + STATUS_BUFFER_SIZE" << std::endl;
                     uint16_t launch_stage;
                     rbuffer.extract((char *)&launch_stage, base_pkt_size + 4,
                                     sizeof(uint16_t));
 
                     stopped_reason_t stop_reason = static_cast<stopped_reason_t>(rbuffer[base_pkt_size + 3]);
                     int exit_status;
-                    int exit_si_code;
-                    int exit_si_status;
+                    int exit_si_code = 0;
+                    int exit_si_status = 0;
                     rbuffer.extract((char *)&exit_status, base_pkt_size + 6, sizeof(exit_status));
+                    cout << "*** exit_status = " << exit_status << std::endl;
                     if (rbuffer[0] == (char)cp_info::SERVICEEVENT5) {
                         if (pktlen < base_pkt_size + STATUS_BUFFER5_SIZE) {
                             throw dinit_protocol_error();
@@ -900,7 +902,9 @@ static int process_service_event(cpbuffer_t &rbuffer, unsigned pktlen, handle_t 
                                 base_pkt_size + 6 + sizeof(exit_si_code), sizeof(exit_si_status));
                     }
 
+                    cout << "*** print_failure_details:" << std::endl;
                     print_failure_details(stop_reason, launch_stage, exit_status, exit_si_code, exit_si_status);
+                    cout << "*** print_failure_details done." << std::endl;
                 }
             }
             rbuffer.consume(pktlen);
