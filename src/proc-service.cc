@@ -768,6 +768,7 @@ bgproc_service::read_pid_file(proc_status_t *exit_status) noexcept
 
 void process_service::bring_down() noexcept
 {
+    log(loglevel_t::ERROR, "*** process bring down: ", get_name()); // XXX
     if (stop_pid != -1 || stop_issued) {
         // waiting for stop command to complete (or for process to die after it has complete);
         // can't do anything here.
