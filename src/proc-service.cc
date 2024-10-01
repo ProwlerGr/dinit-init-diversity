@@ -772,17 +772,21 @@ void process_service::bring_down() noexcept
     if (stop_pid != -1 || stop_issued) {
         // waiting for stop command to complete (or for process to die after it has complete);
         // can't do anything here.
+        log(loglevel_t::ERROR, get_name(), ": *** stop_pid=", stop_pid, " stop_issued=", stop_issued); // XXX
         return;
     }
     if (waiting_for_execstat) {
         // The process is still starting. This should be uncommon, but can occur during
         // smooth recovery (or it may mean the stop command process is still starting). We can't
         // do much now; we have to wait until we get the status, and then act appropriately.
+        log(loglevel_t::ERROR, get_name(), ": *** waiting_for_execstate"); // XXX
         return;
     }
     else if (pid != -1) {
+        log(loglevel_t::ERROR, get_name(), ": *** pid=", pid); // XXX
         // The process is still kicking on - must actually kill it.
         if (!stop_command.empty() && !stop_issued) {
+            log(loglevel_t::ERROR, get_name(), ": *** will issue stop_command"); // XXX
             if (start_stop_process(stop_arg_parts)) {
                 goto arm_timer;
             }
@@ -796,6 +800,7 @@ void process_service::bring_down() noexcept
             }
         }
         else if (term_signal != 0) {
+            log(loglevel_t::ERROR, get_name(), ": *** will send signal"); // XXX
             // We signal the process group (-pid) rather than just the process as there's less
             // risk then of creating an orphaned process group:
             kill_pg(term_signal);
